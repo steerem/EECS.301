@@ -1,38 +1,32 @@
-/*external control
+/*fuck modularization, just put this shit in the main code file*/
 
-enable on rise of chB
-selects amplitude or frequency based on state of switch
-adds or subtracts based on state of chA and boundaries
-*/
+module lab3(switch, chA, chB);
 
-module control(chA,freq,amp,switch, freq_new,amp_new)
+input switch, chA, chB;
+reg [10:0] freq, amp;
+reg ftop,fbot,atop,abot;
 
-function control;
+initial begin end
 
-input chA, switch;
-input reg [10:0] freq;
-input reg [10:0] amp;
-output reg [10:0] freq_new;
-output reg [10:0] amp_new;
-wire reg ftop = 1, fbot = 1, atop = 1, abot = 1;
-
-begin
+always @ (chB) begin
 	
-	if (1 == freq) begin
-		fbot = 0;
+	ftop <= 1; fbot <= 1; atop <= 1; abot <= 1; 	// init/reset bound sense
+	if (1 == freq) begin 								// test bounds
+		fbot <= 0;
 	end
 	if (1000 == freq) begin
-		ftop = 0;
+		ftop <= 0;
 	end
 	if (0 == amp) begin
-		abot = 0;
+		abot <= 0;
 	end
 	if (1000 == amp) begin
-		atop = 0;
+		atop <= 0;
 	end
-	
-	freq_new = freq + (switch & chA & ftop) - (switch & ~chA & fbot);
-   amp_new = amp + (~switch & chA & ftop) - (~switch & ~chA & fbot);
+
+	freq <= freq + (switch & chA & ftop) - (switch & ~chA & fbot);		// inc/dec freq/amp
+   amp <= amp + (~switch & chA & ftop) - (~switch & ~chA & fbot);
+
+end  
 
 endmodule
-	
