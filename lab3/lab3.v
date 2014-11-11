@@ -1,31 +1,25 @@
-/* EECS 301 - LAB 3 
-Benjamin Davis 
-Michael Steere 
-Sergio Martinez Rios 
-*/
+module Lab3(MHz50Clk, A, B, s0, s1, ldac, dIn, serialClock, syncDAC, syncNCO);
 
-module lab3(clk, sclk, speaker);
-	input clk;
-	output reg speaker;
-	output reg sclk ; 
-	initial 
-			begin 
-		sclk <= (500000000/ 440 /4); 
-			end 
-	parameter clkdivider = 50000000/440/4 ;
-	reg [ 23: 0] tone;
-	reg [ 15:0]  counter; 
-		always @ ( posedge clk) begin
-			tone <= tone + 1 ;
-			if (counter ==0 ) begin 
-			counter <= (tone [23] ? clkdivider -1: clkdivider/2-1); 
-			end else begin 
-			counter <= counter + 1 ; 
-			end 
-		end
-		always @ ( posedge clk) begin 
-			if ( counter == 0 ) begin
-				speaker <= ~ speaker; 
-			end 
-		end 
-endmodule 
+input MHz50Clk, A, B, s0, s1; 
+
+wire validS0, validS1, out_valid, motorSpeedReset, serialClock, syncDAC, syncNCO;
+wire [7:0] motorspeed, aCount;
+output wire syncDAC;
+wire [15:0] fCount;
+wire signed [11:0] fsin_o;
+wire [11:0] fsin_oBinary;
+wire [11:0] gainedOut;
+wire faEnable;
+output wire ldac, dIn, serialClock, syncNCO;
+
+switches switches(s0, s1, validS0, validS1); //Controls whether amplitude or frequency is being adjusted
+clock clock(motorSpeedReset, serialClock, syncDAC, syncNCO, faEnable); //generates all different clock frequencies
+fCounter fCounter(validS0, validS1, motorspeed, faEnable, fCount); //frequency control counter
+aCounter aCounter(validS0, validS1, motorspeed, faEnable, aCount); //amplitude control counter
+NCO NCO(fCount, serialClock, 1'b1, syncNCO, fsin_o, out_valid); //Altera NCO
+binaryConverter binaryConverter(fsin_o, fsin_oBinary); //Converts NCO output from 2s complement to binary
+motorSpeed motorSpeed(A, B, motorspeed, motorSpeedReset, serialClock); //Checks direction that motor is spinning
+gainLogic gainLogic( aCount, MHz50Clk, fsin_oBinary, gainedOut); //Implements gain logic for the NCO output
+DAC DAC(gainedOut, serialClock, ldac, dIn, out_valid, syncDAC, syncNCO); //Bundles data bits together for output to DAC
+
+endmodule

@@ -28,16 +28,16 @@ use ieee.std_logic_signed.all;
 
 use std.textio.all;
 
-entity nco_tb is   
+entity NCO_tb is   
   generic(
-		APR	:	INTEGER:=32;
-		MPR	:	INTEGER:=18
+		APR	:	INTEGER:=20;
+		MPR	:	INTEGER:=12
         );
  
-end nco_tb;
+end NCO_tb;
 
 
-architecture tb of nco_tb is
+architecture tb of NCO_tb is
 
 --Convert integer to unsigned std_logicvector function
 function int2ustd(value : integer; width : integer) return std_logic_vector is 
@@ -51,12 +51,10 @@ begin
 end int2ustd;
 
 
-component nco
+component NCO
 
 port(
        phi_inc_i    : IN STD_LOGIC_VECTOR (APR-1 DOWNTO 0);
-       freq_mod_i   : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-       phase_mod_i  : IN STD_LOGIC_VECTOR (15 DOWNTO 0);
        clk		    : IN STD_LOGIC ;
        clken		: IN STD_LOGIC ;
        reset_n		: IN STD_LOGIC ;
@@ -70,12 +68,10 @@ signal reset_n      : std_logic;
 signal clken        : std_logic;
 signal sin_val	    : std_logic_vector (MPR-1 downto 0);
 signal phi          : std_logic_vector (APR-1 downto 0);
-signal fmod      	: std_logic_vector (31 downto 0);
-signal pmod      	: std_logic_vector (15 downto 0);
 signal sel_phi      : std_logic_vector(2 downto 0);
 signal sel_output   : std_logic_vector(2 downto 0);
 signal out_valid    : std_logic;
-constant HALF_CYCLE  : time := 5000 ps;
+constant HALF_CYCLE  : time := 20000 ps;
 constant CYCLE       : time := 2*HALF_CYCLE;
 
 
@@ -83,14 +79,12 @@ begin
 
 -- NCO component instantiation
 
-u1: nco
+u1: NCO
 
 port map(  clk=>clk,
            reset_n=>reset_n,
            clken=>clken,
            phi_inc_i=>phi,
-           freq_mod_i=> fmod,
-           phase_mod_i=> pmod,
            fsin_o=>sin_val,
            out_valid=>out_valid
  );
@@ -99,9 +93,7 @@ reset_n <= '0',
            '1' after 14*HALF_CYCLE ;
 clken   <= '1';
 
-phi<="00000000000000001010011111000110";
-fmod<="00010000000000000000000000000000";
-pmod<=int2ustd(4096,16);
+phi<="00000000001101000111";
 
 -----------------------------------------------------------------------------------------------
 -- Testbench Clock Generation
@@ -119,7 +111,7 @@ end process;
 -- Output Sinusoidal Signals to Text Files 
 -----------------------------------------------------------------------------------------------
 testbench_o : process(clk) 
-file sin_file 		: text open write_mode is "fsin_o_vhdl_nco.txt";
+file sin_file 		: text open write_mode is "fsin_o_vhdl_NCO.txt";
 variable ls			: line;
 variable sin_int	: integer ;
 

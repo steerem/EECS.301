@@ -3,10 +3,10 @@ write transcript nco_vho_transcript
 if {[file exist [project env]] > 0} {
 project close
 }
-if {[file exist "C:/Users/Sergio/Downloads/EECS301/Lab3/nco.mpf"] == 0} {
-  project new [pwd] nco
+if {[file exist "C:/Users/Sergio/Downloads/EECS301/labbbb/NCO.mpf"] == 0} {
+  project new [pwd] NCO
 } else	{
-project open nco
+project open NCO
 }
 # Create default work directory if not present
 if {[file exist work] ==0} 	{
@@ -34,8 +34,8 @@ if {[file exist sgate] ==0} 	{
 vcom -93 -work sgate $env(QUARTUS_ROOTDIR)/eda/sim_lib/sgate_pack.vhd 
 vcom -93 -work sgate $env(QUARTUS_ROOTDIR)/eda/sim_lib/sgate.vhd 
 
-vcom -93 nco.vho
-vcom -93 nco_tb.vhd
-vsim -novopt nco_tb
-do nco_wave.do
+vcom -93 NCO.vho
+vcom -93 NCO_tb.vhd
+vsim -novopt NCO_tb
+do NCO_wave.do
 run 22000 ns

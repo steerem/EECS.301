@@ -2,26 +2,20 @@ transcript on
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider -height 30
-add wave -noupdate -format Logic -radix binary /nco_tb/clk
-add wave -noupdate -format Logic -radix binary /nco_tb/reset_n
-add wave -noupdate -format Logic -radix binary /nco_tb/clken
+add wave -noupdate -format Logic -radix binary /NCO_tb/clk
+add wave -noupdate -format Logic -radix binary /NCO_tb/reset_n
+add wave -noupdate -format Logic -radix binary /NCO_tb/clken
 
 
 add wave -noupdate -divider -height 50 {Phase Increment Value}
-add wave -noupdate -format Literal -radix unsigned /nco_tb/phi
-
-add wave -noupdate -divider -height 30 {Frequency Modulation}
-add wave -noupdate -format Literal -radix unsigned /nco_tb/fmod
-
-add wave -noupdate -divider -height 30 {Phase Modulation}
-add wave -noupdate -format Literal -radix unsigned /nco_tb/pmod
+add wave -noupdate -format Literal -radix unsigned /NCO_tb/phi
 
 add wave -noupdate -divider -height 30 {Output value}
-add wave -noupdate -format Logic -radix binary /nco_tb/out_valid
-add wave -noupdate -color Yellow -format Literal -radix decimal  /nco_tb/sin_val
+add wave -noupdate -format Logic -radix binary /NCO_tb/out_valid
+add wave -noupdate -color Yellow -format Literal -radix decimal  /NCO_tb/sin_val
 
 add wave -noupdate -divider -height 80 {sine waveform}
-add wave -noupdate -color Yellow -format Analog-Step -radix decimal -scale 2.5E-4 /nco_tb/sin_val
+add wave -noupdate -color Yellow -format Analog-Step -radix decimal -scale 0.016 /NCO_tb/sin_val
 
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {356 ns}

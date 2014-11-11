@@ -19,30 +19,30 @@
 //	their respective licensors.  No other licenses, including any licenses
 //	needed under any third party's intellectual property, are provided herein.
 
-/*
-module nco_st(clk, reset_n, clken, phi_inc_i, freq_mod_i, phase_mod_i, fsin_o, out_valid);
 
-parameter mpr = 18;
-parameter opr = 36;
-parameter oprp1 = 37;
-parameter apr = 32;
-parameter apri= 16;
+module NCO_st(clk, reset_n, clken, phi_inc_i, fsin_o, out_valid);
+
+parameter mpr = 12;
+parameter opr = 24;
+parameter oprp1 = 25;
+parameter apr = 20;
+parameter apri= 15;
 parameter aprf= 32;
 parameter aprp= 16;
-parameter aprid=21;
+parameter aprid=20;
 parameter dpri= 5;
-parameter rdw = 18;
-parameter rawc = 8;
-parameter rnwc = 256;
+parameter rdw = 12;
+parameter rawc = 7;
+parameter rnwc = 128;
 parameter rawf = 8;
 parameter rnwf = 256;
-parameter Pn = 16384;
-parameter mxnbc = 4608;
-parameter mxnbf = 4608;
-parameter rsfc = "nco_sin_c.hex";
-parameter rsff = "nco_sin_f.hex";
-parameter rcfc = "nco_cos_c.hex";
-parameter rcff = "nco_cos_f.hex";
+parameter Pn = 8192;
+parameter mxnbc = 1536;
+parameter mxnbf = 3072;
+parameter rsfc = "NCO_sin_c.hex";
+parameter rsff = "NCO_sin_f.hex";
+parameter rcfc = "NCO_cos_c.hex";
+parameter rcff = "NCO_cos_f.hex";
 parameter nc = 1;
 parameter pl = nc;
 parameter log2nc =0;
@@ -60,8 +60,6 @@ input clk;
 input reset_n; 
 input clken; 
 input [apr-1:0] phi_inc_i; 
-input [aprf-1:0] freq_mod_i;
-input [aprp-1:0] phase_mod_i;
 
 output [mpr-1:0] fsin_o;
 output out_valid;
@@ -69,8 +67,6 @@ wire reset;
 assign reset = !reset_n;
 
 wire [apr-1:0]  phi_inc_i_w;
-wire [aprf-1:0] freq_mod_i_w;
-wire [aprp-1:0] phase_mod_i_w;
 wire [apr-1:0] phi_acc_w;
 wire [mpr-1:0] rfx_s;	
 wire [mpr-1:0] rcx_s;
@@ -86,11 +82,6 @@ wire [rawc-1:0] raxxx000m;
 wire [rawf-1:0] raxxx000l; 
 wire [rawc-1:0] raxxx001m; 
 wire [rawf-1:0] raxxx001l; 
-wire [apr-1:0] phi_acc_w_fmi;
-wire [apr-1:0] phi_acc_w_fmo;
-wire [aprp-1:0] phi_acc_w_pmi;
-wire [aprp-1:0] phi_acc_w_pmo;
-wire [aprp-1:0] phi_acc_w_t;
 wire [aprid-1:0] phi_acc_w_d;
 wire [aprid-1:0] phi_acc_w_di;
 wire [dpri-1:0] rval_w_d;
@@ -101,20 +92,7 @@ wire [opr:0] result_i;
 wire [opr:0] result_r;	
 wire [mpr-1:0] fsin_o_w;	
 
-assign phi_acc_w_fmi = phi_inc_i[apr-1:0];
-assign freq_mod_i_w = freq_mod_i;
-assign phi_inc_i_w = phi_acc_w_fmo;
-
-asj_nco_fxx ux003(.clk(clk), 
-             .reset(reset), 
-             .clken(clken), 
-             .phi_acc(phi_acc_w_fmi),
-             .phi_mod_int(freq_mod_i_w),
-             .phi_out(phi_acc_w_fmo)
-             );
-defparam ux003.apr = apr;
-defparam ux003.aprf = aprf;
-defparam ux003.pipeline = 1;
+assign phi_inc_i_w = phi_inc_i;
 
 
 
@@ -163,26 +141,10 @@ defparam ux0219.apr = apr;
 defparam ux0219.aprid = aprid;
 
 
-assign phi_acc_w_pmi = phi_acc_w_d[aprid-1:aprid-aprp];
-assign phase_mod_i_w = phase_mod_i;
-assign phi_acc_w_t = phi_acc_w_pmo[aprp-1:0];
-
-asj_nco_pxx ux004(.clk(clk), 
-             .reset(reset),
-             .clken(clken), 
-             .phi_acc(phi_acc_w_pmi),
-             .phi_mod_int(phase_mod_i_w),
-             .phi_out(phi_acc_w_pmo)
-             );
-
-defparam ux004.aprp = aprp;
-defparam ux004.pipeline = 1;
-defparam ux004.depth = 4;
-
 asj_gam_dp ux008( .clk(clk),
                    .reset(reset), 
                    .clken(clken), 
-                   .phi_acc_w(phi_acc_w_t[aprp-1:aprp-rawc-rawf]),
+                   .phi_acc_w(phi_acc_w_d[aprid-1:aprid-rawc-rawf]),
                    .rom_add_cs(raxxx001ms),
                    .rom_add_cc(raxxx001mc),
                    .rom_add_f(raxxx001l)
@@ -273,9 +235,8 @@ asj_nco_isdr ux710isdr(.clk(clk),
                     .clken(clken),                  
                     .data_ready(out_valid)          
                     );                                      
-defparam ux710isdr.ctc=14;                                       
+defparam ux710isdr.ctc=12;                                       
 defparam ux710isdr.cpr=4;                                   
                                                             
 
 endmodule
-*/

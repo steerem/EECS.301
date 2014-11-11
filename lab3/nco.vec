@@ -15,15 +15,7 @@ INPUTS clken;
 PATTERN
 0> 0
 90>  1 ;
-INPUTS phi_inc_i[31..0];
+INPUTS phi_inc_i[19..0];
 PATTERN
-0> 42950;
-INPUTS freq_mod_i[31..0];
-PATTERN
-0> 0
-2500> 0;
-INPUTS phase_mod_i[15..0];
-PATTERN
-0> 0
-2500> 16384;
-OUTPUTS fsin_o[17..0];
+0> 839;
+OUTPUTS fsin_o[11..0];

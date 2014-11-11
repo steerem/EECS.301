@@ -21,28 +21,24 @@
 
 //   NCO ver 13.1 VERILOG HDL TESTBENCH
 `timescale 1ps / 1ps
-module nco_tb;
+module NCO_tb;
 
 wire out_valid;
-wire [17:0] sin_val;
-reg [31:0] phi;
-reg [31:0] fmod;
-reg [15:0] pmod;
+wire [11:0] sin_val;
+reg [19:0] phi;
 reg reset_n;
 reg clken;
 reg clk;
 
-parameter CYCLE = 10000;
-parameter HALF_CYCLE = 5000;
+parameter CYCLE = 40000;
+parameter HALF_CYCLE = 20000;
 initial
   begin
     $dumpvars;
     #0 clk = 1'b0;
     #0 reset_n = 1'b0;
     #0 clken = 1'b1;
-    #0 phi = 32'b00000000000000001010011111000110;
-    #0 fmod = 32'b00010000000000000000000000000000;
-    #0 pmod = 4096;
+    #0 phi = 20'b00000000001101000111;
     #(14*HALF_CYCLE) reset_n = 1'b1;
   end
 
@@ -55,28 +51,26 @@ always
 integer sin_ch, sin_print;
 initial
   begin
-    sin_ch = $fopen ("fsin_o_ver_nco.txt");
+    sin_ch = $fopen ("fsin_o_ver_NCO.txt");
   end
 
 always @(posedge clk)
   begin
     if(reset_n==1'b1 & out_valid==1'b1)
       begin
-        if (sin_val[17:0] < (1<<17))
-          sin_print = sin_val[17:0];
+        if (sin_val[11:0] < (1<<11))
+          sin_print = sin_val[11:0];
         else
-          sin_print =  sin_val[17:0] - (1<<18);
+          sin_print =  sin_val[11:0] - (1<<12);
 
     $fdisplay (sin_ch, "%0d", sin_print);
       end
 end
 
-nco i_nco (
+NCO i_NCO (
     .out_valid(out_valid),
-    .fsin_o(sin_val[17:0]),
-    .phi_inc_i(phi[31:0]),
-    .freq_mod_i(fmod),
-    .phase_mod_i(pmod),
+    .fsin_o(sin_val[11:0]),
+    .phi_inc_i(phi[19:0]),
     .reset_n(reset_n),
     .clken(clken),
     .clk(clk)

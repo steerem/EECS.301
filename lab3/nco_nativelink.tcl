@@ -30,10 +30,10 @@ set testbench_files [glob -nocomplain -- *.hex]
 
 # The top-level in HDL type "Verilog"
 set ipfs_ext "vo"
-if {[file exists nco.vo]} {
+if {[file exists NCO.vo]} {
 	set hdl_ext "v"
 } else {
-	puts "Warning: Could not find nco.$ipfs_ext!"
+	puts "Warning: Could not find NCO.$ipfs_ext!"
 }
 
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "Verilog" -section_id eda_simulation
@@ -43,18 +43,18 @@ set_global_assignment -name EDA_TEST_BENCH_NAME tb -section_id eda_simulation
 
 
 # test bench settings
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME nco_inst -section_id tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME work.nco_tb -section_id tb
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NCO_inst -section_id tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME work.NCO_tb -section_id tb
 
 # IPFS file
-set_global_assignment -name EDA_IPFS_FILE "nco.${ipfs_ext}" -section_id eda_simulation -library work
+set_global_assignment -name EDA_IPFS_FILE "NCO.${ipfs_ext}" -section_id eda_simulation -library work
 
 # Add Testbench files
 foreach i $testbench_files {
   set_global_assignment -name EDA_TEST_BENCH_FILE "$i" -section_id tb -library work
 }
 
-set_global_assignment -name EDA_TEST_BENCH_FILE "nco_tb.${hdl_ext}" -section_id tb -library work
+set_global_assignment -name EDA_TEST_BENCH_FILE "NCO_tb.${hdl_ext}" -section_id tb -library work
 
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR 22000ns -section_id tb -library work
 

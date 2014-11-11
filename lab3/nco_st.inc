@@ -19,16 +19,14 @@
 --party's intellectual property, are provided herein.
 
 
-FUNCTION nco_st
+FUNCTION NCO_st
 (
- phi_inc_i[31..0],
- freq_mod_i[31..0],
- phase_mod_i[15..0],
+ phi_inc_i[19..0],
 	clk,
 	reset_n,
 	clken
 )
 
 RETURNS (
-     fsin_o[17..0]
+     fsin_o[11..0]
 );

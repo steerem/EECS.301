@@ -3,10 +3,10 @@ write transcript nco_vo_transcript
 if {[file exist [project env]] > 0} {
 project close
 }
-if {[file exist "C:/Users/Sergio/Downloads/EECS301/Lab3/nco.mpf"] == 0} {
-  project new [pwd] nco
+if {[file exist "C:/Users/Sergio/Downloads/EECS301/labbbb/NCO.mpf"] == 0} {
+  project new [pwd] NCO
 } else	{
-project open nco
+project open NCO
 }
 # Create default work directory if not present
 if {[file exist work] ==0} 	{
@@ -31,8 +31,8 @@ if {[file exist sgate] ==0} 	{
   exec vmap sgate sgate}
 vlog -93 -work sgate $env(QUARTUS_ROOTDIR)/eda/sim_lib/sgate.v
 
-vlog nco.vo
-vlog nco_tb.v
-vsim -L lpm -L altera_mf -L sgate -novopt nco_tb
-do nco_wave.do
+vlog NCO.vo
+vlog NCO_tb.v
+vsim -L lpm -L altera_mf -L sgate -novopt NCO_tb
+do NCO_wave.do
 run 22000 ns
